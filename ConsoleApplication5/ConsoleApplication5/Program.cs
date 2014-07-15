@@ -12,86 +12,138 @@ namespace ConsoleApplication5
         // открывает файл, заполняет значениями все поля
         static void Preparefile()
         {
-            string[] file = File.ReadAllLines("C:\\Users\\Всеволод\\Desktop\\text\\test.txt");
+            string file = File.ReadAllText("C:\\Users\\Всеволод\\Desktop\\text\\test.txt");
+            
             filelenght = file.Length;
-            stringsize = new int[filelenght];
-            s = new string[filelenght];
-            chrarray = new char[filelenght][];
+            chrarray = new int[filelenght];
+            s = new int[filelenght];
+            r = new int[filelenght];
             for (int i = 0; i < filelenght; i++)
             {
-                stringsize[i] = file[i].Length;
-                s[i] = file[i];
+                chrarray[i] = (int)file[i];
             }
-            for (int i = 0; i < filelenght; i++)
-            {
-                chrarray[i] = new char[stringsize[i]];
-                for (int j = 0; j < stringsize[i]; j++)
-                {
 
-                    chrarray[i][j] = s[i][j];
-                }
-
-            }
         }
 
-        // число строк в файле
+        // число 
         static int filelenght;
-        // массив длин строк файла
-        static int[] stringsize = new int[filelenght];
-        // массив строк файла (сам файла)
-        static string[] s = new string[filelenght];
         // массив состоящий из массивов символов каждой строки
-        static char[][] chrarray = new char[filelenght][];
+        static int[] chrarray;
         // вывод массива содержащего текст файла (или уже зашифр.) на консоль
+        static int[] s;
+        static int[] r;
+        static int code1;
+        static int code2;
+        static int code3;
         static void Writefile()
         {
             for (int i = 0; i < filelenght; i++)
             {
+                Console.Write((char)chrarray[i]);
                 
-                for (int j = 0; j < stringsize[i]; j++)
-                {
-
-                    Console.Write(chrarray[i][j]);
-                }
+            }
                 Console.WriteLine();
-            }
+                Console.WriteLine();
         }
-        // обычный шифратор
-        static void Shifrator()
+        // обычный шифратор, числа 1, 5 и 7 могут задаватся ключом
+        static void Shifrator(int t, int t1, int t2)
         {
-            for (int i = 0; i < filelenght; i++)
-            {
-
-                for (int j = 0; j < stringsize[i]; j++)
+            int k = 0;
+            
+            int p = t1;
+            for (int i = 1; i < filelenght; i++)
                 {
-                    chrarray[i][j] = (char)(s[i][j] + 1);
-                    
+                    chrarray[i] = chrarray[i] + t;
+                if (chrarray[i] > 100)
+                {
+                    chrarray[i] = chrarray[i] - 9 - p;
+                    s[k] = i;
+                    k = k + 1;
+                    if (t1 == p/2)
+                    {
+                        p = t1;
+                    }
+                    p = 2*t1;
                 }
                 
+                }
+            k = 0;
+            for (int i = 1; i < filelenght; i++)
+            {
+                if (chrarray[i] == 91)
+                {
+                    chrarray[i] = chrarray[i] + t2;
+                    r[k] = i;
+                    k = k + 1;
+                }
             }
         }
-        // дешифратор
-        static void Deshifrator()
+        static void Deshifrator(int t, int t1, int t2)
         {
-            for (int i = 0; i < filelenght; i++)
+            int k = 0;
+            
+            int p = t1;
+            for (int i = 1; i < filelenght; i++)
             {
-
-                for (int j = 0; j < stringsize[i]; j++)
+                chrarray[i] = chrarray[i] - t;
+                if (i == s[k])
                 {
-                    chrarray[i][j] = (char)(s[i][j] - 1);
-
+                    chrarray[i] = chrarray[i] + 9 + p;
+                    k = k + 1;
+                    if (t1 == p/2)
+                    {
+                        p = t1;
+                    }
+                    p = 2 * t1;
                 }
-
+            }
+            k = 0;
+            for (int i = 1; i < filelenght; i++)
+            {
+                if (i == r[k])
+                {
+                    chrarray[i] = chrarray[i] - t2;
+                    
+                    k = k + 1;
+                }
+            }
+        }
+        static void ReadCode()
+        {
+            Console.WriteLine("Введите код из трех цифр.");
+            string code = Console.ReadLine();
+            if (code.Length == 3)
+            {
+                int i = 0;
+                i = 3;
+                if (i == 3)
+                {
+                    code1 = code[0];
+                    code2 = code[1];
+                    code3 = code[2];
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка ввода.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ошибка ввода.");
             }
         }
         static void Main(string[] args)
         {
             Preparefile();
             Writefile();
-            Shifrator();
+            ReadCode();
+            Shifrator(code1,code2,code3);
             Writefile();
-            Deshifrator();
+            ReadCode();
+            Deshifrator(code1, code2, code3);
             Writefile();
+
+            
             Console.ReadKey();
         }
     }
