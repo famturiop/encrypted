@@ -12,49 +12,49 @@ namespace ConsoleApplication5
         // открывает файл, заполняет значениями все поля
         static void Preparefile()
         {
+            // считывает все символы файла в одну строку!
             string file = File.ReadAllText("C:\\Users\\Всеволод\\Desktop\\text\\test.txt");
             
             filelenght = file.Length;
             chrarray = new int[filelenght];
             s = new int[filelenght];
-            r = new int[filelenght];
+            
             for (int i = 0; i < filelenght; i++)
             {
                 chrarray[i] = (int)file[i];
             }
-
         }
 
-        // число 
+        // число всех символов файла
         static int filelenght;
         // массив состоящий из массивов символов каждой строки
         static int[] chrarray;
-        // вывод массива содержащего текст файла (или уже зашифр.) на консоль
         static int[] s;
-        static int[] r;
         static int code1;
         static int code2;
         static int code3;
+        // вывод массива содержащего текст файла (или уже зашифр.) на консоль
         static void Writefile()
         {
             for (int i = 0; i < filelenght; i++)
             {
-                Console.Write((char)chrarray[i]);
-                
+                Console.Write(chrarray[i]);
+                Console.Write(" ");
             }
                 Console.WriteLine();
                 Console.WriteLine();
         }
-        // обычный шифратор, числа 1, 5 и 7 могут задаватся ключом
-        static void Shifrator(int t, int t1, int t2)
+        // шифратор
+        static void Shifrator(int t, int t1, int t2)  // три переменные кода - три уровня шифра
         {
             int k = 0;
-            
             int p = t1;
-            for (int i = 1; i < filelenght; i++)
+            // первые два уровня один - лин. ко всему массиву
+            // второй - вычитает либо одно, либо другое число из части эл-ов
+            for (int i = 0; i < filelenght; i++)
                 {
                     chrarray[i] = chrarray[i] + t;
-                if (chrarray[i] > 100)
+                if (chrarray[i] > 130)
                 {
                     chrarray[i] = chrarray[i] - 9 - p;
                     s[k] = i;
@@ -65,25 +65,22 @@ namespace ConsoleApplication5
                     }
                     p = 2*t1;
                 }
-                
                 }
             k = 0;
-            for (int i = 1; i < filelenght; i++)
+            // третий уровень шифра линейный - прибавляет сумму ряда к эл-ту 
+            for (int i = 0; i < filelenght; i++)
             {
-                if (chrarray[i] == 91)
+                for (int j = 0; j < t2; j++)
                 {
-                    chrarray[i] = chrarray[i] + t2;
-                    r[k] = i;
-                    k = k + 1;
+                    chrarray[i] = chrarray[i] + j;
                 }
             }
         }
-        static void Deshifrator(int t, int t1, int t2)
+        static void Deshifrator(int t, int t1, int t2) // тоже что и в шифраторе, но наоборот)
         {
             int k = 0;
-            
             int p = t1;
-            for (int i = 1; i < filelenght; i++)
+            for (int i = 0; i < filelenght; i++)
             {
                 chrarray[i] = chrarray[i] - t;
                 if (i == s[k])
@@ -98,39 +95,35 @@ namespace ConsoleApplication5
                 }
             }
             k = 0;
-            for (int i = 1; i < filelenght; i++)
+            for (int i = 0; i < filelenght; i++)
             {
-                if (i == r[k])
+                for (int j = 1; j < t2; j++)
                 {
-                    chrarray[i] = chrarray[i] - t2;
-                    
-                    k = k + 1;
+                    chrarray[i] = chrarray[i] - j;
                 }
             }
         }
         static void ReadCode()
         {
-            Console.WriteLine("Введите код из трех цифр.");
+            Console.WriteLine("Введите код из трех символов.");
             string code = Console.ReadLine();
+            // проверка длины введенного кода
             if (code.Length == 3)
             {
-                int i = 0;
-                i = 3;
-                if (i == 3)
-                {
-                    code1 = code[0];
-                    code2 = code[1];
-                    code3 = code[2];
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка ввода.");
-                }
+                    code1 = Convert.ToInt32(code[0]);
+                    code2 = Convert.ToInt32(code[1]);
+                    code3 = Convert.ToInt32(code[2]);
             }
             else
             {
                 Console.WriteLine("Ошибка ввода.");
+                return;
             }
+            
+        }
+        static void Convertfiletobyte()
+        {
+            // ммм, потенциально полезная функция, лень писать
         }
         static void Main(string[] args)
         {
